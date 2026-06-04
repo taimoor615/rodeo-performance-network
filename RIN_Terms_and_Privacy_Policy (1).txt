@@ -1,0 +1,182 @@
+
+RODEO INFORMATION NETWORK
+rinrodeo.com
+
+Legal Policies
+Terms of Service  |  Privacy Policy
+Effective Date: April 28, 2026
+Rodeo Information Network Inc.
+
+TERMS OF SERVICE
+Effective Date: April 28, 2026
+These Terms of Service ("Terms") govern your access to and use of the Rodeo Information Network platform, including the website at rinrodeo.com, any mobile applications, APIs, and related services (collectively, the "Platform"), operated by Rodeo Information Network Inc. ("RIN," "we," "us," or "our"). By creating an account or using the Platform, you agree to be bound by these Terms.
+If you do not agree to these Terms, do not use the Platform.
+
+1. Acceptance of Terms
+By registering for an account, accessing, or using the Platform, you represent that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. If you are using the Platform on behalf of an organization, you represent that you have the authority to bind that organization to these Terms.
+2. Eligibility
+You must be at least 13 years of age to create an account. If you are under 18, your parent or legal guardian must review and agree to these Terms on your behalf. By using the Platform, you represent that you meet these age requirements.
+Parents and guardians who create or oversee accounts for minors are responsible for ensuring the minor's use of the Platform complies with these Terms.
+3. Account Registration
+To access certain features of the Platform, you must register for an account. When registering, you agree to:
+• Provide accurate, current, and complete information.
+• Maintain and promptly update your account information to keep it accurate and complete.
+• Maintain the security and confidentiality of your account credentials.
+• Notify us immediately at legal@rinrodeo.com if you suspect unauthorized access to your account.
+• Accept responsibility for all activities that occur under your account.
+RIN reserves the right to suspend or terminate accounts that contain inaccurate information or that violate these Terms.
+4. The RIN Platform — Description of Services
+The Rodeo Information Network is a performance tracking and athlete identity platform for rodeo competitors. The Platform provides:
+• Rider Performance Index (RPI) — A proprietary rolling 100-point performance index calculated from submitted event results.
+• Athlete Profiles — A public-facing profile displaying performance history, RPI scores, and divisional standing.
+• Result Submission — A system for competitors to submit self-reported and verified event results.
+• Event Directory — A searchable database of upcoming and past rodeo events.
+• Animal and Stock Contractor Records — Profiles for horses, bulls, and other competition animals.
+The RPI is a performance index, not an official ranking. RIN does not sanction events or award prize money.
+5. User Conduct
+You agree not to use the Platform to:
+• Submit false, fabricated, or misleading event results or performance data.
+• Impersonate another rider, athlete, or organization.
+• Harvest, scrape, or collect data about other users without consent.
+• Interfere with or disrupt the integrity or performance of the Platform.
+• Attempt to gain unauthorized access to any portion of the Platform or its related systems.
+• Use the Platform for any unlawful purpose or in violation of any applicable laws or regulations.
+• Upload or transmit viruses, malware, or any other harmful code.
+• Use automated tools (bots, scrapers, crawlers) to access the Platform without prior written consent.
+RIN reserves the right to remove content, suspend, or permanently terminate accounts that violate these rules.
+6. User-Submitted Content
+The Platform allows users to submit event results, scores, and other performance data ("User Content"). By submitting User Content, you:
+• Represent that the information is accurate to the best of your knowledge.
+• Grant RIN a worldwide, royalty-free, non-exclusive license to store, process, display, and use the User Content to operate and improve the Platform.
+• Understand that User Content may be visible to other users in accordance with your privacy settings.
+RIN may verify, adjust, or remove User Content at its discretion, including when results are contradicted by verified event organizer data.
+7. Verified Event Partner Data
+When results are submitted by a Verified Event Partner (an authorized event organizer), those results may override self-reported data. Verified results carry greater weight in the RPI calculation and are marked as verified on your profile.
+If you believe a verified result is incorrect, contact us at legal@rinrodeo.com to initiate a dispute review.
+8. Intellectual Property
+The Platform and all content created by RIN — including but not limited to the RPI algorithm, software, text, graphics, logos, and data compilations — are the exclusive property of Rodeo Information Network Inc. and are protected by U.S. and international copyright, trademark, and trade secret laws.
+You may not copy, reproduce, distribute, modify, create derivative works of, publicly display, or commercially exploit any portion of the Platform without express written permission from RIN.
+The trademarks RODEO INFORMATION NETWORK and RIN are owned by Rodeo Information Network Inc. All rights reserved.
+9. Subscriptions and Payments
+Certain features of the Platform may require a paid subscription. By subscribing, you agree to:
+• Pay all fees as described at the time of purchase.
+• Provide accurate and complete billing information.
+• Authorize RIN to charge your payment method on a recurring basis for subscription fees.
+All fees are non-refundable except as required by applicable law or as otherwise specified in writing by RIN. RIN reserves the right to change pricing with 30 days' notice.
+10. Third-Party Services
+The Platform may integrate with or link to third-party websites and services (such as payment processors and social media platforms). RIN is not responsible for the content, privacy practices, or terms of any third-party services. Your use of third-party services is at your own risk and subject to their respective terms.
+11. Disclaimers
+THE PLATFORM IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. RIN DOES NOT WARRANT THAT THE PLATFORM WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS. RIN DOES NOT WARRANT THE ACCURACY OR COMPLETENESS OF ANY INFORMATION ON THE PLATFORM, INCLUDING USER-SUBMITTED RESULTS AND RPI SCORES.
+THE RPI IS A CALCULATED INDEX BASED ON AVAILABLE DATA AND IS NOT GUARANTEED TO BE ACCURATE, CURRENT, OR COMPLETE. IT SHOULD NOT BE USED AS THE SOLE BASIS FOR ANY COMPETITIVE, FINANCIAL, OR SPONSORSHIP DECISIONS.
+12. Limitation of Liability
+TO THE FULLEST EXTENT PERMITTED BY LAW, RODEO INFORMATION NETWORK INC., ITS OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE PLATFORM.
+OUR TOTAL LIABILITY TO YOU FOR ANY CLAIMS ARISING UNDER THESE TERMS SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU PAID TO RIN IN THE 12 MONTHS PRECEDING THE CLAIM OR (B) $100.
+13. Indemnification
+You agree to defend, indemnify, and hold harmless Rodeo Information Network Inc. and its officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or related to your use of the Platform, your violation of these Terms, or your User Content.
+14. Governing Law and Dispute Resolution
+These Terms are governed by the laws of the Commonwealth of Virginia, without regard to its conflict of laws principles. Any dispute arising out of or relating to these Terms or the Platform shall be resolved by binding arbitration in Charlottesville, Virginia, under the rules of the American Arbitration Association, except that either party may seek injunctive relief in a court of competent jurisdiction to protect intellectual property rights.
+You waive any right to participate in a class action lawsuit or class-wide arbitration.
+15. Children's Privacy
+The Platform is not directed to children under 13. Users between 13 and 17 must have parental consent to use the Platform. If we become aware that we have collected personal information from a child under 13 without parental consent, we will delete that information promptly. If you believe we have inadvertently collected such information, contact us at legal@rinrodeo.com.
+16. Modifications to Terms
+RIN reserves the right to modify these Terms at any time. We will provide notice of material changes by posting the updated Terms on the Platform and updating the Effective Date. Your continued use of the Platform after the effective date of any changes constitutes your acceptance of the revised Terms.
+17. Termination
+RIN may terminate or suspend your account and access to the Platform at any time, with or without cause, with or without notice. Upon termination, all provisions of these Terms that by their nature should survive will survive, including ownership provisions, warranty disclaimers, indemnity, and limitations of liability.
+18. Contact
+For questions about these Terms, contact us at:
+Rodeo Information Network Inc.
+650 Box Holly Lane, Charlottesville, VA 22903
+Email: legal@rinrodeo.com
+
+PRIVACY POLICY
+Effective Date: April 28, 2026
+Rodeo Information Network Inc. ("RIN," "we," "us," or "our") is committed to protecting the privacy of our users. This Privacy Policy describes how we collect, use, disclose, and safeguard your information when you use the RIN Platform at rinrodeo.com ("Platform"). Please read this policy carefully.
+
+1. Information We Collect
+1.1 Information You Provide Directly
+When you register or use the Platform, we collect:
+• Account Information: First and last name, email address, phone number, date of birth, city, state, and country.
+• Athletic Profile: Division, primary event type, competition history, and profile photo (optional).
+• Event Results: Performance data you submit, including scores, times, placements, and related event information.
+• Payment Information: Billing name, address, and payment card details, processed securely through our third-party payment processor. RIN does not store full card numbers.
+• Communications: Messages, support requests, and feedback you send to us.
+1.2 Information Collected Automatically
+When you use the Platform, we automatically collect:
+• Log Data: IP address, browser type, operating system, pages visited, and time spent on pages.
+• Device Information: Device type, unique device identifiers, and mobile network information.
+• Cookies and Tracking: We use cookies and similar technologies to maintain sessions, remember preferences, and analyze usage. See Section 8 for details.
+1.3 Information from Third Parties
+We may receive information about you from:
+• Verified Event Partners who submit your results directly to the Platform.
+• Social media platforms, if you choose to link your account or sign in via a social login.
+2. How We Use Your Information
+We use the information we collect to:
+• Create and manage your account.
+• Calculate and display your Rider Performance Index (RPI) and athlete profile.
+• Process payments and manage subscriptions.
+• Communicate with you about your account, updates, and promotional offers (with your consent).
+• Respond to your questions, comments, and support requests.
+• Improve, develop, and protect the Platform.
+• Comply with legal obligations and enforce our Terms of Service.
+• Detect and prevent fraud, abuse, and security incidents.
+We do not sell your personal information to third parties.
+3. How We Share Your Information
+3.1 Public Profile Information
+Your athlete profile — including your name, RPI scores, division, event history, and performance data — is public by default and visible to all Platform users. You may adjust certain profile visibility settings in your account preferences.
+3.2 Service Providers
+We share information with trusted third-party service providers who assist us in operating the Platform, including:
+• Cloud hosting and database services.
+• Payment processing (your payment data is handled directly by our processor under their privacy policy).
+• Email delivery and communications services.
+• Analytics providers.
+These providers are contractually obligated to use your data only for the purposes of providing services to RIN and to protect it in accordance with applicable law.
+3.3 Verified Event Partners
+If you compete at an event hosted by a Verified Event Partner, that partner may submit your results to the Platform. We may also share limited profile information (such as your RIN ID) with Verified Event Partners to facilitate result verification.
+3.4 Legal Requirements
+We may disclose your information if required by law, court order, or governmental authority, or if we believe disclosure is necessary to protect the safety of any person, to address fraud or security issues, or to protect RIN's rights.
+3.5 Business Transfers
+In the event of a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred as part of that transaction. We will notify you via email or prominent notice on the Platform before your information becomes subject to a different privacy policy.
+4. Data Retention
+We retain your personal information for as long as your account is active or as needed to provide services. If you delete your account, we will delete or anonymize your personal information within 90 days, except where we are required to retain it for legal, tax, or audit purposes.
+Performance data (event results and RPI history) associated with a deleted account will be anonymized and may be retained in aggregate form for platform analytics.
+5. Your Choices and Rights
+Depending on your location, you may have the following rights regarding your personal information:
+• Access: Request a copy of the personal information we hold about you.
+• Correction: Request correction of inaccurate or incomplete information.
+• Deletion: Request deletion of your personal information, subject to certain exceptions.
+• Portability: Request a machine-readable copy of your data.
+• Opt-Out of Marketing: Unsubscribe from promotional emails at any time using the unsubscribe link in any email, or by contacting us.
+To exercise any of these rights, contact us at legal@rinrodeo.com. We will respond within 30 days.
+6. Children's Privacy
+The Platform is not directed to children under 13. We do not knowingly collect personal information from children under 13 without verified parental consent. Users between 13 and 17 must have a parent or guardian review and consent to these policies.
+Parents who create accounts for minor athletes are responsible for the accuracy of their child's information and may contact us to review, update, or delete their child's data.
+Note to Parents: The Platform collects date of birth for age-division assignment and displays athlete performance data publicly. Please review your child's profile visibility settings.
+7. Data Security
+We implement industry-standard security measures to protect your personal information, including:
+• Encryption of data in transit using TLS/HTTPS.
+• Encrypted storage of passwords (never stored in plain text).
+• Access controls limiting employee access to personal data.
+• Regular security reviews and monitoring.
+No method of transmission over the internet or electronic storage is 100% secure. While we strive to protect your information, we cannot guarantee absolute security. In the event of a data breach affecting your rights, we will notify you as required by applicable law.
+8. Cookies and Tracking Technologies
+We use the following types of cookies:
+• Essential Cookies: Required for the Platform to function (e.g., session authentication).
+• Analytics Cookies: Help us understand how users interact with the Platform (e.g., Google Analytics).
+• Preference Cookies: Remember your settings and preferences.
+You can control cookie settings through your browser. Disabling essential cookies may impair Platform functionality. We do not currently respond to "Do Not Track" signals.
+9. Third-Party Links
+The Platform may contain links to third-party websites. This Privacy Policy does not apply to those sites. We encourage you to review the privacy policies of any third-party sites you visit.
+10. Changes to This Policy
+We may update this Privacy Policy from time to time. We will notify you of material changes by posting the new policy on the Platform and updating the Effective Date at the top. Your continued use of the Platform after such changes constitutes your acceptance of the updated policy.
+11. California Privacy Rights
+If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA), including the right to know what personal information we collect and how it is used, the right to delete your personal information, and the right to non-discrimination for exercising your privacy rights. To exercise these rights, contact us at legal@rinrodeo.com.
+12. Contact Us
+If you have questions, concerns, or requests regarding this Privacy Policy, please contact us:
+Rodeo Information Network Inc.
+650 Box Holly Lane, Charlottesville, VA 22903
+Email: legal@rinrodeo.com
+Website: https://rinrodeo.com/legal
+Rodeo Information Network — rinrodeo.com
+
+© 2026 Rodeo Information Network Inc.  |  Confidential  |  Page 1
+

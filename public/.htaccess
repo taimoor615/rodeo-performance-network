@@ -1,0 +1,12 @@
+Options -MultiViews
+RewriteEngine On
+
+# Serve existing files and directories directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Don't rewrite requests to /wp (WordPress subdirectory)
+RewriteCond %{REQUEST_URI} !^/wp/
+
+# All other routes → React app's index.html
+RewriteRule ^ index.html [L]

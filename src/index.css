@@ -1,0 +1,114 @@
+/* RPN – Visual Western Edition (Advanced UI) */
+/* Mobile-first, performance-based rodeo platform */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Client palette: primary red, light theme with dark sections */
+  --rpn-red: #FD0000;
+  --rpn-red-dark: #B91C1C;
+  --rpn-red-deeper: #7F1D1D;
+  --rpn-white: #ffffff;
+  --rpn-blue: #FD0000;       /* legacy alias mapped to primary red */
+  --rpn-blue-dark: #1F2937;  /* dark section background */
+  --rpn-blue-light: #F3F4F6;
+  --rpn-navy: #111827;
+  --rpn-cream: #F9FAFB;
+  --rpn-cream-warm: #FDF2F2;
+  --rpn-text: #111827;
+  --rpn-text-muted: #6B7280;
+  /* Theme aliases */
+  --rpn-brown: #1F2937;
+  --rpn-tan: #B91C1C;
+  --rpn-gold: #FD0000;
+  --rpn-gold-light: #F97373;
+  --rpn-bg: #F9FAFB;
+  --rpn-card: #ffffff;
+  --rpn-border: #E5E7EB;
+  --rpn-leather: #1F2937;
+  --rpn-error: #DC2626;
+
+  /* Semantic accent utilities */
+  --rpn-red-subtle: rgba(253, 0, 0, 0.07);
+  --rpn-red-glow: rgba(253, 0, 0, 0.22);
+  --rpn-dark-overlay: rgba(17, 24, 39, 0.82);
+
+  /* Advanced UI tokens */
+  --rpn-radius-sm: 6px;
+  --rpn-radius: 10px;
+  --rpn-radius-lg: 14px;
+  --rpn-radius-xl: 18px;
+  --rpn-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.10);
+  --rpn-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  --rpn-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --rpn-shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.22);
+  --rpn-shadow-red: 0 4px 20px rgba(253, 0, 0, 0.22);
+  --rpn-shadow-gold: 0 4px 20px rgba(185, 28, 28, 0.25);
+  --rpn-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Fluid horizontal padding used by all padded content sections */
+  --section-px: clamp(1rem, 4vw, 3.5rem);
+
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--rpn-text);
+  background-color: var(--rpn-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--rpn-red-dark);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--rpn-transition);
+}
+a:hover {
+  color: var(--rpn-red);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--rpn-bg);
+}
+
+h1 { font-size: clamp(1.85rem, 5vw, 2.75rem); line-height: 1.15; letter-spacing: -0.03em; }
+h2 { font-size: clamp(1.4rem, 4vw, 1.9rem); letter-spacing: -0.02em; }
+h3 { font-size: 1.15rem; letter-spacing: -0.01em; }
+
+button, .btn {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--rpn-radius);
+  border: 1px solid var(--rpn-red);
+  background: var(--rpn-red);
+  color: var(--rpn-white);
+  padding: 0.65rem 1.35rem;
+  cursor: pointer;
+  transition: all var(--rpn-transition);
+}
+button:hover, .btn:hover {
+  background: var(--rpn-red-dark);
+  border-color: var(--rpn-red-dark);
+  box-shadow: 0 6px 20px var(--rpn-red-glow);
+  transform: translateY(-2px);
+}
+button:focus-visible, .btn:focus-visible {
+  outline: 2px solid var(--rpn-red);
+  outline-offset: 2px;
+}
+
+/* Utility */
+.error { color: var(--rpn-error); }
+.placeholder { color: var(--rpn-text-muted); font-style: italic; }

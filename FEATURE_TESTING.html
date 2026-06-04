@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RIN App — Feature Testing Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: #1a1a2e;
+      background: #f4f6f9;
+      padding: 40px 20px;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 56px 64px;
+    }
+
+    /* ── Cover Header ── */
+    .doc-header {
+      border-bottom: 3px solid #c00000;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    .doc-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #c00000;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+    .doc-header .subtitle {
+      font-size: 13px;
+      color: #666;
+      font-weight: 400;
+    }
+    .doc-header .meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* ── Section titles ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #c00000;
+      margin-bottom: 10px;
+      margin-top: 36px;
+    }
+
+    /* ── Point cards ── */
+    .point-card {
+      border: 1px solid #e8eaf0;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .point-card-header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .point-number {
+      background: #c00000;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .point-number.new {
+      background: #2e7d32;
+    }
+    .point-title {
+      font-size: 15px;
+      font-weight: 600;
+      flex: 1;
+    }
+    .session-badge {
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    .point-card-body {
+      padding: 22px 22px 24px;
+    }
+
+    /* ── Sub-headings inside cards ── */
+    .sub-heading {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #555;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .point-card-body .sub-heading:first-child {
+      margin-top: 0;
+    }
+
+    /* ── PDF Status pill ── */
+    .pdf-status {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .pdf-status.not-in    { background: #fdecea; color: #c00000; }
+    .pdf-status.partial   { background: #fff8e1; color: #e65100; }
+    .pdf-status.in-pdf    { background: #e8f5e9; color: #2e7d32; }
+    .pdf-status.no-spec   { background: #e3f2fd; color: #1565c0; }
+
+    .pdf-desc {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    /* ── Lists ── */
+    ul, ol {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+    li {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #333;
+    }
+    li + li { margin-top: 2px; }
+
+    /* ── Test scenario blocks ── */
+    .test-scenario {
+      background: #f9fafb;
+      border-left: 3px solid #c00000;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+    .test-scenario-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #c00000;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .test-scenario ol {
+      padding-left: 18px;
+    }
+    .test-scenario li {
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* ── Files changed ── */
+    .file-tag {
+      display: inline-block;
+      background: #f0f4ff;
+      color: #1a3a8f;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: 2px 2px 2px 0;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    thead tr {
+      background: #1a1a2e;
+      color: #fff;
+    }
+    thead th {
+      padding: 10px 14px;
+      font-weight: 600;
+      text-align: left;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+    }
+    tbody tr:nth-child(even) { background: #f7f8fc; }
+    tbody tr:hover { background: #eef0f8; }
+    tbody td {
+      padding: 9px 14px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+    .badge-done {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .badge-new {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #2e7d32;
+    }
+    .badge-session {
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* ── Session divider ── */
+    .session-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 36px 0 20px;
+    }
+    .session-divider-line { flex: 1; height: 1px; background: #ddd; }
+    .session-divider-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    /* ── Code inline ── */
+    code {
+      background: #f0f0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #333;
+    }
+
+    /* ── Arrow notation ── */
+    .arrow { color: #c00000; font-weight: 600; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid #eee; margin: 32px 0; }
+
+    /* ── Division table ── */
+    .division-badge {
+      display: inline-block;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    p { font-size: 13px; line-height: 1.7; color: #333; margin-top: 6px; }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      font-size: 12px;
+      color: #aaa;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ HEADER ═══ -->
+  <div class="doc-header">
+    <h1>RIN App — Feature Testing Guide</h1>
+    <div class="subtitle">Rodeo Identification Network — Developer Specification v2.0</div>
+    <div class="meta">Last updated: May 14, 2026 &nbsp;|&nbsp; Points covered: 15–20</div>
+  </div>
+
+  <!-- ═══ PDF NOTE ═══ -->
+  <div class="section-label">PDF Reference Check</div>
+  <p>
+    Before each feature, the <strong>Final-feedback-rodeo.pdf</strong> (Full Developer Specification v2.0)
+    was checked to see if the point is covered. Each point's status is noted at the top of its section.
+  </p>
+
+  <!-- ═══ HISTORY TABLE ═══ -->
+  <div class="section-label" style="margin-top:32px;">Point History — At a Glance</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Feature</th>
+        <th>Session</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>15</td>
+        <td>Barrel Racing Divisions (1D–5D)</td>
+        <td><span class="badge-session">May 13, 2026 — Session 1</span></td>
+        <td><span class="badge-done">Done</span></td>
+      </tr>
+      <tr>
+        <td>16</td>
+        <td>Team Roping Handicap Divisions (#7.5–#15.5)</td>
+        <td><span class="badge-session">May 13, 2026 — Session 1</span></td>
+        <td><span class="badge-done">Done</span></td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>Division Reset When Event Changes</td>
+        <td><span class="badge-session">May 13, 2026 — Session 1</span></td>
+        <td><span class="badge-done">Done</span></td>
+      </tr>
+      <tr>
+        <td>18</td>
+        <td>Division Field Added to Organizer Submit Results</td>
+        <td><span class="badge-session">May 13, 2026 — Session 1</span></td>
+        <td><span class="badge-done">Done</span></td>
+      </tr>
+      <tr>
+        <td><strong>19</strong></td>
+        <td><strong>Mini Bull as a Separate Animal Type</strong></td>
+        <td><span class="badge-session">May 14, 2026 — Session 2</span></td>
+        <td><span class="badge-new">New</span></td>
+      </tr>
+      <tr>
+        <td><strong>20</strong></td>
+        <td><strong>Earnings / Payout Input Fix</strong></td>
+        <td><span class="badge-session">May 14, 2026 — Session 2</span></td>
+        <td><span class="badge-new">New</span></td>
+      </tr>
+      <tr>
+        <td><strong>21</strong></td>
+        <td><strong>Team Roping — Slide Division Added</strong></td>
+        <td><span class="badge-session">May 19, 2026 — Session 3</span></td>
+        <td><span class="badge-new">New</span></td>
+      </tr>
+      <tr>
+        <td><strong>22</strong></td>
+        <td><strong>Goat Tying — Correct Youth Divisions</strong></td>
+        <td><span class="badge-session">May 19, 2026 — Session 3</span></td>
+        <td><span class="badge-new">New</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 1 — May 13, 2026
+  ═══════════════════════════════════════════ -->
+  <div class="session-divider">
+    <div class="session-divider-line"></div>
+    <div class="session-divider-label">Session 1 &mdash; May 13, 2026 &mdash; Points 15–18</div>
+    <div class="session-divider-line"></div>
+  </div>
+
+  <!-- ── POINT 15 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number">Point 15</span>
+      <span class="point-title">Barrel Racing Divisions (1D, 2D, 3D, 4D, 5D)</span>
+      <span class="session-badge">Session 1</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status not-in">Not in PDF</span>
+      <p class="pdf-desc">
+        The PDF lists only generic divisions: Youth, High School, College, Amateur, Open/Pro, Senior (pages 5, 8, 13).
+        The 1D–5D barrel racing split-division system is new client feedback, not in the original specification.
+      </p>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Added a <code>BARREL_RACING_DIVISIONS</code> constant: <code>['1D', '2D', '3D', '4D', '5D']</code></li>
+        <li>Added a <code>getDivisionsForEvent(eventCategory)</code> helper that returns the correct division list based on the selected event</li>
+        <li>Barrel Racing, Barrel Racing (Youth), Pole Bending, and Goat Tying now show 1D–5D instead of generic divisions</li>
+        <li>Applied to both the Rider Post Score form (timed section) and the Organizer Submit Results form</li>
+        <li>When the rider changes event type, division resets to blank — avoids carrying over a wrong division</li>
+        <li>A hint appears below the dropdown: "1D = fastest; 5D = slowest. Set by the event based on your run time."</li>
+      </ul>
+
+      <div class="sub-heading">What the Divisions Mean</div>
+      <table>
+        <thead>
+          <tr><th>Division</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="division-badge">1D</span></td><td>Fastest times — top-level competitors</td></tr>
+          <tr><td><span class="division-badge">2D</span></td><td>Within 0.5 sec of the 1D leader</td></tr>
+          <tr><td><span class="division-badge">3D</span></td><td>Within 1.0 sec of the 1D leader</td></tr>
+          <tr><td><span class="division-badge">4D</span></td><td>Within 2.0 sec of the 1D leader</td></tr>
+          <tr><td><span class="division-badge">5D</span></td><td>Within 3.0+ sec of the 1D leader (slowest)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+      <p style="margin-top:6px;color:#666;">New constants, getDivisionsForEvent(), updated timed division dropdowns in both Post Score and Submit Results tabs.</p>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Post Score — Barrel Racing Division</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score tab</li>
+          <li>Select Timed as score type</li>
+          <li>Select Barrel Racing as the event category</li>
+          <li>The Division dropdown should show: 1D, 2D, 3D, 4D, 5D</li>
+          <li>It should NOT show: Youth, High School, College, etc.</li>
+          <li>Select 2D <span class="arrow">→</span> proceed to enter run time</li>
+          <li>Switch to Bull Riding (roughstock) — Division resets and shows generic divisions</li>
+          <li>Switch back to Barrel Racing (Youth) — should again show 1D–5D</li>
+          <li>Check that Pole Bending and Goat Tying also show 1D–5D</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Submit Results — Barrel Racing Division</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Set Performance Type to Timed</li>
+          <li>Set Event Category to Barrel Racing</li>
+          <li>The Division dropdown should show: 1D, 2D, 3D, 4D, 5D</li>
+          <li>Select a division <span class="arrow">→</span> submit a result <span class="arrow">→</span> verify it saves</li>
+          <li>Switch Event Category to Tie-Down Roping — Division resets and shows generic divisions</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POINT 16 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number">Point 16</span>
+      <span class="point-title">Team Roping Handicap Divisions</span>
+      <span class="session-badge">Session 1</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status not-in">Not in PDF</span>
+      <p class="pdf-desc">
+        Team roping is covered in Sections 6.2 and 6.5 (pages 13–15) but only discusses Header/Heeler roles and completion status.
+        The handicap division numbering system (#7.5–#15.5, Open) is new client feedback, not in the original specification.
+      </p>
+
+      <div class="sub-heading">Background — How Roping Divisions Work</div>
+      <ul>
+        <li>Each roper (header and heeler) has an individual skill number (#3 beginner to #9/#10 professional)</li>
+        <li>The combined number (header's # + heeler's #) determines which division they can enter</li>
+        <li>Example: a #6 header + #5 heeler = combined #11 → qualifies for #10.5–#11.5 division</li>
+        <li>Open division has no combined cap</li>
+      </ul>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Added a <code>TEAM_ROPING_DIVISIONS</code> constant with the client-provided division structure</li>
+        <li>Team Roping – Header and Team Roping – Heeler now show these divisions in both forms</li>
+        <li>A hint appears: "Combined header + heeler handicap number. Open = no cap."</li>
+      </ul>
+
+      <div class="sub-heading">Division Structure</div>
+      <table>
+        <thead>
+          <tr><th>Division</th><th>Level</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Open</strong></td><td>Elite</td><td>No age or handicap cap, for high-level ropers</td></tr>
+          <tr><td><strong>#14.5 – #15.5</strong></td><td>Advanced</td><td>High-numbered, often with Slide formats</td></tr>
+          <tr><td><strong>#12.5 – #13.5</strong></td><td>Mid</td><td>Mid-level, often age restricted (21+)</td></tr>
+          <tr><td><strong>#10.5 – #11.5</strong></td><td>Lower-mid</td><td>Often capped heeler max</td></tr>
+          <tr><td><strong>#7.5 – #9.5</strong></td><td>Beginner–Intermediate</td><td>Strict caps on both header and heeler</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Post Score — Team Roping Division</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score tab</li>
+          <li>Select Timed as score type</li>
+          <li>Select Team Roping – Header as event category</li>
+          <li>Division dropdown should show: Open, #14.5–#15.5, #12.5–#13.5, #10.5–#11.5, #7.5–#9.5</li>
+          <li>Hint should show: "Combined header + heeler handicap number. Open = no cap."</li>
+          <li>Switch to Team Roping – Heeler — same division list should appear</li>
+          <li>Switch to Tie-Down Roping — should revert to generic divisions</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Submit Results — Team Roping Division</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Set Performance Type to Timed</li>
+          <li>Set Event Category to Team Roping – Header</li>
+          <li>Division dropdown should show the 5 handicap options</li>
+          <li>Select #10.5 – #11.5 <span class="arrow">→</span> enter a time <span class="arrow">→</span> submit <span class="arrow">→</span> verify success</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POINT 17 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number">Point 17</span>
+      <span class="point-title">Division Reset When Event Changes</span>
+      <span class="session-badge">Session 1</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status no-spec">UX Improvement — Not in PDF</span>
+      <p class="pdf-desc">Not explicitly specified in the PDF — this is a UX improvement that prevents wrong data entry.</p>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>When a user changes the Event Category in the timed score form, the Division field automatically resets to blank</li>
+        <li>This forces the user to consciously select the correct division for the new event type</li>
+        <li>Without this, switching from Barrel Racing (where "2D" was selected) to Team Roping would carry "2D" over — which is meaningless for roping</li>
+      </ul>
+
+      <div class="sub-heading">How to Test</div>
+      <div class="test-scenario">
+        <div class="test-scenario-title">Division Auto-Reset</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score <span class="arrow">→</span> Timed</li>
+          <li>Select Barrel Racing <span class="arrow">→</span> select division 3D</li>
+          <li>Change the event to Team Roping – Header</li>
+          <li>The Division field should clear back to "Select division…" (blank)</li>
+          <li>Confirm: you must re-select a division before submitting</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POINT 18 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number">Point 18</span>
+      <span class="point-title">Division Field Added to Organizer Submit Results</span>
+      <span class="session-badge">Session 1</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status partial">Partially in PDF</span>
+      <p class="pdf-desc">
+        The PDF (Section 6.3, pages 13–14) defines result entry for timed events and mentions "division" as a data field.
+        The organizer submit results form existed but was MISSING the division field entirely — this fills that gap.
+      </p>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Added a Division dropdown to the organizer's Submit Results form</li>
+        <li>The division is required — the form will not submit without it</li>
+        <li>Division options adapt based on the selected Event Category (same <code>getDivisionsForEvent()</code> logic as the rider form)</li>
+        <li>Division resets when Performance Type or Event Category changes</li>
+      </ul>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+
+      <div class="sub-heading">How to Test</div>
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Division Field</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>The form now has a Division field right after Event Category</li>
+          <li>Leave Division blank <span class="arrow">→</span> try to submit <span class="arrow">→</span> should block with a browser validation message</li>
+          <li>Set Event Category to Barrel Racing + Division to 2D <span class="arrow">→</span> fill in rider name and time <span class="arrow">→</span> submit <span class="arrow">→</span> success</li>
+          <li>After successful submit, Division resets to blank</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 2 — May 14, 2026 (NEW)
+  ═══════════════════════════════════════════ -->
+  <div class="session-divider">
+    <div class="session-divider-line"></div>
+    <div class="session-divider-label">Session 2 &mdash; May 14, 2026 &mdash; Points 19–20 (New)</div>
+    <div class="session-divider-line"></div>
+  </div>
+
+  <!-- ── POINT 19 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number new">Point 19 — New</span>
+      <span class="point-title">Mini Bull as a Separate Animal Type</span>
+      <span class="session-badge">Session 2</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status partial">Partially in PDF</span>
+      <p class="pdf-desc">
+        Junior Bull Riding appears on page 8 as a distinct event type.
+        However, "Mini Bull" as a specific animal sub-type (separate from Adult Bull) is not explicitly listed
+        in the PDF specification — this is new client feedback.
+      </p>
+
+      <div class="sub-heading">Background</div>
+      <ul>
+        <li>Adult bulls are used in standard Bull Riding events (all ages/divisions)</li>
+        <li>Mini bulls are smaller bulls used primarily in youth divisions (Junior Bull Riding)</li>
+        <li>Some mini bull riders also compete on adult bulls — the two are not exclusive to one event</li>
+        <li>The system now tracks which type of bull was used in each ride</li>
+      </ul>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Renamed Bull to Bull (Adult) in the animal type dropdown in My Animals</li>
+        <li>Added Mini Bull as a new animal type option — contractors can now add mini bulls to their herd</li>
+        <li>Added a Bull Type dropdown (Adult Bull / Mini Bull) to the Rider Post Score roughstock form — appears only when the event is Bull Riding or Junior Bull Riding</li>
+        <li>Added the same Bull Type dropdown to the Organizer Submit Results roughstock form — same conditional logic</li>
+        <li><code>bull_type</code> is included in the API payload for both rider and organizer submissions</li>
+        <li>A hint shows: "Mini bulls are typically used in youth divisions"</li>
+        <li><code>bull_type</code> resets when the score form is cleared after submission</li>
+      </ul>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+      <p style="margin-top:6px;color:#666;">AnimalFormFields dropdown, scoreForm state, orgForm state, roughstock form UI for rider and organizer, API payloads.</p>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">My Animals — Mini Bull Animal Type</div>
+        <ol>
+          <li>Log in as a contractor <span class="arrow">→</span> Dashboard <span class="arrow">→</span> My Animals tab</li>
+          <li>Click Add New Animal</li>
+          <li>Open the Animal Type dropdown</li>
+          <li>You should see: Bull (Adult) — renamed from plain "Bull" and Mini Bull — new option</li>
+          <li>Select Mini Bull <span class="arrow">→</span> fill in name and other fields <span class="arrow">→</span> save <span class="arrow">→</span> it should appear in the animal list</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Post Score — Bull Type</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score tab</li>
+          <li>Select Roughstock as score type</li>
+          <li>Choose an event from Step 1 <span class="arrow">→</span> proceed to Step 2</li>
+          <li>Set Event Category to Bull Riding</li>
+          <li>A Bull Type dropdown should appear below the Animal Name field</li>
+          <li>Options: Select bull type…, Adult Bull, Mini Bull</li>
+          <li>Hint text appears: "Mini bulls are typically used in youth divisions"</li>
+          <li>Change Event Category to Junior Bull Riding — Bull Type dropdown should still appear</li>
+          <li>Change Event Category to Saddle Bronc — Bull Type dropdown should disappear</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Submit Results — Bull Type</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Set Performance Type to Roughstock</li>
+          <li>Confirm Event Category is Bull Riding (or select it)</li>
+          <li>A Bull Type row should appear below the Animal Name / Covered? row</li>
+          <li>Select Mini Bull <span class="arrow">→</span> submit a result <span class="arrow">→</span> verify success</li>
+          <li>Change Event Category to Saddle Bronc — Bull Type row should disappear</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POINT 20 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number new">Point 20 — New</span>
+      <span class="point-title">Earnings / Payout Input Fix</span>
+      <span class="session-badge">Session 2</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status in-pdf">In PDF</span>
+      <p class="pdf-desc">
+        Section 4.5 (page 10) mentions prize money / payout as a recorded data field for performance entries.
+        The bug where the input refused entry is not in the specification — it is a browser behavior issue
+        with <code>type="number"</code> inputs in React.
+      </p>
+
+      <div class="sub-heading">Why This Bug Occurred</div>
+      <p>
+        <code>type="number"</code> in React controlled components can show a browser validation popup
+        ("Please enter a number") even when the value is a valid number string — especially on initial render
+        with an empty string value or after certain state updates. This is a known cross-browser quirk with controlled React inputs.
+      </p>
+
+      <div class="sub-heading">What Was Done</div>
+      <p>Changed the Payout / Prize Money input from <code>type="number"</code> to <code>type="text"</code> with <code>inputMode="decimal"</code> in three places:</p>
+      <table style="margin-top:10px;">
+        <thead>
+          <tr><th>#</th><th>Location</th><th>Form Step</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Rider Post Score — Roughstock</td><td>Step 5 — Placement &amp; Payout</td></tr>
+          <tr><td>2</td><td>Rider Post Score — Timed</td><td>Step 4 — Placement &amp; Payout</td></tr>
+          <tr><td>3</td><td>Organizer Submit Results</td><td>Payout ($) field</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;">
+        The submit handlers already used <code>Number(value)</code> to convert to a number before sending — no change was needed there.
+        <code>inputMode="decimal"</code> preserves the numeric keyboard on mobile while removing the problematic browser validation on desktop.
+      </p>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+      <p style="margin-top:6px;color:#666;">Three payout input elements changed from type="number" to type="text" inputMode="decimal".</p>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Roughstock Payout</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Post Score <span class="arrow">→</span> select Roughstock</li>
+          <li>Complete Step 1 (event search) and Step 2 (event category, animal, etc.)</li>
+          <li>Complete Step 3 (covered / buck-off)</li>
+          <li>Scroll to Step 5 — Placement &amp; Payout</li>
+          <li>Click inside the Payout / Prize Money field <span class="arrow">→</span> type 250.50</li>
+          <li>No browser validation popup should appear — you should be able to type freely</li>
+          <li>Submit the form — verify success</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Timed Payout</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Post Score <span class="arrow">→</span> select Timed</li>
+          <li>Complete Steps 1–3 <span class="arrow">→</span> reach Step 4 — Placement &amp; Payout</li>
+          <li>Click the Payout / Prize Money field <span class="arrow">→</span> type 125</li>
+          <li>No error message <span class="arrow">→</span> should submit successfully</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Payout</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Scroll to the bottom of the form — the Payout ($) field</li>
+          <li>Click it <span class="arrow">→</span> type 500</li>
+          <li>No browser validation error</li>
+          <li>Submit <span class="arrow">→</span> verify success message</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SESSION 3 — May 19, 2026 (NEW)
+  ═══════════════════════════════════════════ -->
+  <div class="session-divider">
+    <div class="session-divider-line"></div>
+    <div class="session-divider-label">Session 3 &mdash; May 19, 2026 &mdash; Points 21–22 (New)</div>
+    <div class="session-divider-line"></div>
+  </div>
+
+  <!-- ── POINT 21 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number new">Point 21 — New</span>
+      <span class="point-title">Team Roping — Slide Division Added</span>
+      <span class="session-badge">Session 3</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status not-in">Not in PDF</span>
+      <p class="pdf-desc">
+        Team roping divisions are covered in Sections 6.2/6.5 but the Slide format is not mentioned.
+        This is new client feedback based on WSTR (World Series of Team Roping) format data.
+      </p>
+
+      <div class="sub-heading">Background — What "Slide" Means</div>
+      <ul>
+        <li>A Slide event is a handicap bracket format used by major associations like WSTR</li>
+        <li>It raises the combined number cap beyond the standard range (above #13.5 or #15.5)</li>
+        <li>Acts as a handicap bracket so higher-skilled teams compete against each other fairly</li>
+        <li>Sometimes includes time adjustments so differently-matched teams remain competitive</li>
+      </ul>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Added <code>#15.5 Slide</code> between Open and #14.5–#15.5 in the division list</li>
+        <li>Added <code>#13.5 Slide</code> between #14.5–#15.5 and #12.5–#13.5</li>
+        <li>Updated hint text to explain Slide format</li>
+        <li>Both rider Post Score and organizer Submit Results forms show the updated options</li>
+      </ul>
+
+      <div class="sub-heading">Updated Division List</div>
+      <table>
+        <thead>
+          <tr><th>Division</th><th>Type</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Open</strong></td><td>Standard</td><td>No number cap</td></tr>
+          <tr><td><strong>#15.5 Slide</strong></td><td><span style="color:#c00000;font-weight:600;">Slide</span></td><td>Raised cap — WSTR handicap bracket</td></tr>
+          <tr><td><strong>#14.5 – #15.5</strong></td><td>Standard</td><td>High-skill range</td></tr>
+          <tr><td><strong>#13.5 Slide</strong></td><td><span style="color:#c00000;font-weight:600;">Slide</span></td><td>Raised cap — WSTR handicap bracket</td></tr>
+          <tr><td><strong>#12.5 – #13.5</strong></td><td>Standard</td><td>Mid-level, often age restricted</td></tr>
+          <tr><td><strong>#10.5 – #11.5</strong></td><td>Standard</td><td>Lower-mid, capped heeler</td></tr>
+          <tr><td><strong>#7.5 – #9.5</strong></td><td>Standard</td><td>Beginner to intermediate</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+      <p style="margin-top:6px;color:#666;">TEAM_ROPING_DIVISIONS constant updated, hint text updated in rider and organizer forms.</p>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Post Score — Slide Division</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score tab</li>
+          <li>Select Timed as score type</li>
+          <li>Select Team Roping – Header as event category</li>
+          <li>Division dropdown should now show 7 options: Open, #15.5 Slide, #14.5–#15.5, #13.5 Slide, #12.5–#13.5, #10.5–#11.5, #7.5–#9.5</li>
+          <li>Hint should read: "Combined header + heeler handicap number. 'Slide' = raised cap handicap bracket (WSTR format)."</li>
+          <li>Select #15.5 Slide <span class="arrow">→</span> complete and submit the form <span class="arrow">→</span> verify success</li>
+          <li>Repeat with Team Roping – Heeler — same 7 options should appear</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Submit Results — Slide Division</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Set Performance Type to Timed and Event Category to Team Roping – Header</li>
+          <li>Division dropdown should show all 7 options including the two Slide options</li>
+          <li>Select #13.5 Slide <span class="arrow">→</span> enter a time <span class="arrow">→</span> submit <span class="arrow">→</span> verify success</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POINT 22 ── -->
+  <div class="point-card">
+    <div class="point-card-header">
+      <span class="point-number new">Point 22 — New</span>
+      <span class="point-title">Goat Tying — Correct Youth Divisions</span>
+      <span class="session-badge">Session 3</span>
+    </div>
+    <div class="point-card-body">
+
+      <div class="sub-heading">PDF Status</div>
+      <span class="pdf-status not-in">Not in PDF</span>
+      <p class="pdf-desc">
+        The client confirmed goat tying is a youth sport — divisions should be age/grade based,
+        not the 1D–5D time-spread system used in barrel racing.
+      </p>
+
+      <div class="sub-heading">Background</div>
+      <ul>
+        <li>Goat tying is a youth sport — competitors are Junior High, Senior High, or College level</li>
+        <li>The 1D–5D system (previously applied) is for barrel racing and splits entrants by proximity to the fastest time — this does not apply to goat tying</li>
+        <li>Goat tying divisions reflect competitor age/grade, not their time bracket</li>
+      </ul>
+
+      <div class="sub-heading">Goat Tying Scoring Rules (Client Confirmed)</div>
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>How the App Handles It</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Fastest time wins</td><td>Standard timed event scoring</td></tr>
+          <tr><td>No-time if goat gets up before 6 seconds</td><td>"Did you receive an official time?" → No</td></tr>
+          <tr><td>5-sec penalty if horse crosses rope</td><td>PENALTY_VALUE['Goat Tying'] = 5, num_penalties field</td></tr>
+          <tr><td>3 legs tied with piggin' string + hooey</td><td>Rules knowledge — not tracked in score form</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">What Was Done</div>
+      <ul>
+        <li>Added new <code>GOAT_TYING_DIVISIONS</code> constant: Junior High, Senior High, College, Open</li>
+        <li>Removed Goat Tying from the 1D–5D barrel racing group in <code>getDivisionsForEvent()</code></li>
+        <li>Goat Tying now returns its own youth divisions instead of 1D–5D</li>
+        <li>Updated hint text: "Youth event — select your age division. 5-sec penalty if horse crosses the rope."</li>
+        <li>Existing scoring logic (5-sec penalty, no-time) unchanged — already correct</li>
+      </ul>
+
+      <div class="sub-heading">Files Changed</div>
+      <span class="file-tag">src/pages/DashboardPage.jsx</span>
+      <p style="margin-top:6px;color:#666;">GOAT_TYING_DIVISIONS constant added, getDivisionsForEvent() updated, hint text updated in rider and organizer forms.</p>
+
+      <div class="sub-heading">How to Test</div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Rider Post Score — Goat Tying Divisions</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Post Score tab</li>
+          <li>Select Timed as score type</li>
+          <li>Select Goat Tying as event category</li>
+          <li>Division dropdown should show: Junior High, Senior High, College, Open</li>
+          <li>It should NOT show: 1D, 2D, 3D, 4D, 5D</li>
+          <li>Hint should read: "Youth event — select your age division. 5-sec penalty if horse crosses the rope."</li>
+          <li>Switch to Barrel Racing — should show 1D–5D again (confirms Goat Tying was correctly separated)</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Organizer Submit Results — Goat Tying Divisions</div>
+        <ol>
+          <li>Log in as an event organizer <span class="arrow">→</span> Dashboard <span class="arrow">→</span> Submit Results tab</li>
+          <li>Set Performance Type to Timed and Event Category to Goat Tying</li>
+          <li>Division dropdown should show: Junior High, Senior High, College, Open</li>
+          <li>Select Senior High <span class="arrow">→</span> enter a time and rider name <span class="arrow">→</span> submit <span class="arrow">→</span> verify success</li>
+        </ol>
+      </div>
+
+      <div class="test-scenario">
+        <div class="test-scenario-title">Goat Tying Penalty — Confirm Existing System Works</div>
+        <ol>
+          <li>Log in as a rider <span class="arrow">→</span> Post Score <span class="arrow">→</span> Timed <span class="arrow">→</span> Goat Tying</li>
+          <li>If horse crossed the rope during the run, set Number of Penalties to 1</li>
+          <li>The system should add 5 seconds to the raw run time automatically</li>
+          <li>Final time displayed = raw time + 5 seconds</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    RIN App — Feature Testing Guide &nbsp;|&nbsp; Last updated May 19, 2026
+  </div>
+
+</div>
+</body>
+</html>
