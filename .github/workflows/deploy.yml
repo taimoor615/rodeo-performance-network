@@ -36,7 +36,7 @@ jobs:
       - name: Deploy to Hostinger
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avzr --delete
+          switches: -avzr --delete --exclude='/wp' --exclude='/.htaccess'
           path: dist/
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_host: ${{ secrets.HOST }}
