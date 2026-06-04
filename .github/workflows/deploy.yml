@@ -1,0 +1,44 @@
+name: Build & Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main        # Sirf main branch push par deploy hoga
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Code checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Node.js setup
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Dependencies install
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Build
+      - name: Build project
+        run: npm run build
+        env:
+          VITE_WORDPRESS_URL: ${{ secrets.VITE_WORDPRESS_URL }}
+
+      # 5. Deploy dist/ to server via rsync over SSH
+      - name: Deploy to Hostinger
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
