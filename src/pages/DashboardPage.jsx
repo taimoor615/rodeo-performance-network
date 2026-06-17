@@ -169,7 +169,7 @@ export default function DashboardPage() {
   const { token, user, loading: authLoading, getAuthHeaders, logout, refreshUser } = useAuth()
 
   const tier               = user?.membership_tier || 'free'
-  const isRider            = user?.roles?.includes?.('rpn_rider')
+  const isRider            = user?.roles?.some?.(r => r === 'rpn_rider' || r.includes('rider'))
   const isContractor       = user?.roles?.includes?.('rpn_contractor')
   const isProducer         = user?.roles?.includes?.('rpn_producer')
   const isAdmin            = user?.roles?.includes?.('administrator')

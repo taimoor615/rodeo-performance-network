@@ -4026,6 +4026,16 @@
   margin-bottom: 0.3rem;
 }
 .join-bundle-card--student .join-bundle-eyebrow { color: #2563eb; }
+.join-bundle-card .btn-secondary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+.join-bundle-card .btn-secondary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
 
 .join-bundle-title { font-size: 1.2rem; font-weight: 700; margin: 0 0 0.35rem; color: var(--rpn-navy); }
 .join-bundle-price { font-size: 2rem; font-weight: 800; color: var(--rpn-navy); margin: 0 0 0.5rem; }
@@ -4055,11 +4065,19 @@
   color: var(--rpn-text-muted);
   font-size: 0.75rem;
   cursor: pointer;
-  padding: 0;
+  padding: 4px 12px;
   margin-top: 0.5rem;
   text-decoration: underline;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
 }
-.join-clear-addon:hover { color: var(--rpn-red); }
+.join-clear-addon:hover {
+  background: var(--rpn-red);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+}
 
 /* Free-tier upgrade banner in score tab */
 .free-tier-upgrade-banner {

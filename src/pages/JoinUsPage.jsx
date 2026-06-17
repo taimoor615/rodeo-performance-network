@@ -157,6 +157,7 @@ export default function JoinUsPage() {
   // Strategic add-ons
   const [applyStudentDiscount, setApplyStudentDiscount] = useState(false)
   const [studentOrg, setStudentOrg] = useState('')   // NHSRA | NIRA | edu
+  const [studentEmail, setStudentEmail] = useState('')
   const [partnerBundle, setPartnerBundle] = useState(false)
   const [partnerEmail, setPartnerEmail] = useState('')
 
@@ -273,6 +274,7 @@ export default function JoinUsPage() {
         ...(isOrgRole && producerLicenseId.trim() ? { producer_license_id: producerLicenseId.trim() } : {}),
         ...(partnerBundle && partnerEmail.trim() ? { partner_email: partnerEmail.trim() } : {}),
         ...(applyStudentDiscount && studentOrg ? { student_org: studentOrg } : {}),
+        ...(applyStudentDiscount && studentOrg === 'edu' && studentEmail.trim() ? { student_email: studentEmail.trim() } : {}),
       }
       const res = await fetch(`${WP_CONFIG.apiUrl}/rpn/v1/join`, {
         method: 'POST',
@@ -442,7 +444,13 @@ export default function JoinUsPage() {
               <li>NIL-ready profiles for both athletes</li>
               <li>Annual renewal October 1</li>
             </ul>
-            <button type="button" className="btn btn-primary join-plan-cta" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="btn btn-primary join-plan-cta" onClick={() => {
+              setBillingInterval('year')
+              setSelectedTierKey('rin_competitor')
+              setPartnerBundle(true)
+              setApplyStudentDiscount(false)
+              setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+            }}>
               Select Bundle →
             </button>
           </div>
@@ -470,7 +478,13 @@ export default function JoinUsPage() {
               <li>NIL-ready profile for recruiting</li>
               <li>Verified with NHSRA / NIRA / .edu email</li>
             </ul>
-            <button type="button" className="btn btn-secondary join-plan-cta" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="btn btn-secondary join-plan-cta" onClick={() => {
+              setBillingInterval('year')
+              setSelectedTierKey('rin_competitor')
+              setApplyStudentDiscount(true)
+              setPartnerBundle(false)
+              setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+            }}>
               Apply Student Rate →
             </button>
           </div>
@@ -525,25 +539,31 @@ export default function JoinUsPage() {
 
             <div className="join-form-row">
               <label htmlFor="membership_plan">Membership Plan</label>
-              <select
-                id="membership_plan"
-                value={selectedTierKey}
-                onChange={(e) => { setSelectedTierKey(e.target.value); handleSelectTier(e.target.value) }}
-                required
-              >
-                <option value="">Select a plan…</option>
-                {availableTiers.map((t) => {
-                  const showYear = billingInterval === 'year' && t.priceYear != null
-                  const price = showYear ? t.priceYear : t.price
-                  const interval = showYear ? 'year' : t.interval
-                  const label = t.price === null
-                    ? `${t.name} — Custom`
-                    : price > 0
-                      ? `${t.name} — $${price}/${interval}`
-                      : `${t.name} — Free`
-                  return <option key={t.key} value={t.key}>{label}</option>
-                })}
-              </select>
+              {partnerBundle ? (
+                <input type="text" value="Roping Partner Bundle — $149/yr (2 accounts)" disabled style={{ background: '#f3f4f6', cursor: 'not-allowed' }} />
+              ) : applyStudentDiscount ? (
+                <input type="text" value="Student Rate — Competitor Pro — $39/yr" disabled style={{ background: '#f3f4f6', cursor: 'not-allowed' }} />
+              ) : (
+                <select
+                  id="membership_plan"
+                  value={selectedTierKey}
+                  onChange={(e) => { setSelectedTierKey(e.target.value); handleSelectTier(e.target.value) }}
+                  required
+                >
+                  <option value="">Select a plan…</option>
+                  {availableTiers.map((t) => {
+                    const showYear = billingInterval === 'year' && t.priceYear != null
+                    const price = showYear ? t.priceYear : t.price
+                    const interval = showYear ? 'year' : t.interval
+                    const label = t.price === null
+                      ? `${t.name} — Custom`
+                      : price > 0
+                        ? `${t.name} — $${price}/${interval}`
+                        : `${t.name} — Free`
+                    return <option key={t.key} value={t.key}>{label}</option>
+                  })}
+                </select>
+              )}
             </div>
 
             <div className="join-form-row join-form-row--half">
@@ -630,9 +650,21 @@ export default function JoinUsPage() {
                     <option value="NIRA">NIRA member (college)</option>
                     <option value="edu">College / university .edu email</option>
                   </select>
-                  <span className="join-form-label-hint">Eligibility is verified during account activation. Use your school email if selecting .edu.</span>
+                  <span className="join-form-label-hint">Eligibility is verified during account activation.</span>
                 </div>
-                <button type="button" className="join-clear-addon" onClick={() => { setApplyStudentDiscount(false); setStudentOrg('') }}>Remove discount</button>
+                {studentOrg === 'edu' && (
+                  <div className="join-form-row">
+                    <label htmlFor="student_email">School Email (.edu)</label>
+                    <input
+                      id="student_email" type="email"
+                      value={studentEmail} onChange={(e) => setStudentEmail(e.target.value)}
+                      placeholder="you@university.edu"
+                      required
+                    />
+                    <span className="join-form-label-hint">Enter your .edu email address for verification.</span>
+                  </div>
+                )}
+                <button type="button" className="join-clear-addon" onClick={() => { setApplyStudentDiscount(false); setStudentOrg(''); setStudentEmail('') }}>Remove discount</button>
               </div>
             )}
 
