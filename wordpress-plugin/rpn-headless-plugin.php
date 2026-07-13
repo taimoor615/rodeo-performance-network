@@ -5154,10 +5154,17 @@
 
             if ($is_business_profile && !empty($params['business_name'])) {
                 wp_update_post(array('ID' => $profile_post_id, 'post_title' => sanitize_text_field($params['business_name'])));
-            } elseif (!$is_business_profile && (!empty($params['first_name']) || !empty($params['last_name']))) {
-                $fn = get_user_meta($user_id, 'first_name', true) ?: '';
-                $ln = get_user_meta($user_id, 'last_name',  true) ?: '';
-                $new_title = trim("$fn $ln");
+            } elseif (!$is_business_profile && (!empty($params['first_name']) || !empty($params['last_name']) || !empty($params['display_name']))) {
+                // Display Name takes priority (shows on the public riders listing and rider profile);
+                // falls back to First + Last Name when no display name is set.
+                $dn = !empty($params['display_name']) ? sanitize_text_field($params['display_name']) : '';
+                if ($dn) {
+                    $new_title = $dn;
+                } else {
+                    $fn = get_user_meta($user_id, 'first_name', true) ?: '';
+                    $ln = get_user_meta($user_id, 'last_name',  true) ?: '';
+                    $new_title = trim("$fn $ln");
+                }
                 if ($new_title) {
                     wp_update_post(array('ID' => $profile_post_id, 'post_title' => $new_title));
                 }

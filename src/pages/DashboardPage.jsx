@@ -1082,7 +1082,7 @@ export default function DashboardPage() {
         <div>
           <h1>My Dashboard</h1>
           <p className="dashboard-subtitle">
-            Welcome, {user.first_name || user.display_name || user.email}
+            Welcome, {user.display_name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email}
           </p>
           <div className="dashboard-header-meta">
             <span className="dashboard-rin-id">RIN ID: <strong>{rinId}</strong></span>
