@@ -32,17 +32,16 @@ jobs:
         env:
           VITE_WORDPRESS_URL: ${{ secrets.VITE_WORDPRESS_URL }}
 
-      # 5. Deploy dist/ to Hostinger via FTP
-      - name: Deploy to Hostinger via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      # 5. Deploy dist/ to server via rsync over SSH
+      #    (switched back from FTP — Hostinger's plain-FTP login was rejecting the
+      #    FTP_USERNAME/FTP_PASSWORD secrets with "530 Login incorrect"; SSH creds work.)
+      - name: Deploy to Hostinger
+        uses: burnett01/rsync-deployments@7.0.1
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: /domains/rinrodeo.com/public_html/
-          exclude: |
-            **/wp/**
-            **/.htaccess
-            **/wp-content/**
-          dangerous-clean-slate: false
+          switches: -avzr --delete --exclude='/wp' --exclude='/.htaccess' --exclude='/wp-content'
+          path: dist/
+          remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_host: ${{ secrets.HOST }}
+          remote_port: ${{ secrets.PORT }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
