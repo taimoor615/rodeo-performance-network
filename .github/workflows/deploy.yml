@@ -35,10 +35,14 @@ jobs:
       # 5. Deploy dist/ to server via rsync over SSH
       #    (switched back from FTP — Hostinger's plain-FTP login was rejecting the
       #    FTP_USERNAME/FTP_PASSWORD secrets with "530 Login incorrect"; SSH creds work.)
+      #    No --delete: the public_html root has files unrelated to this build
+      #    (e.g. wp.zip, text.php) that a --delete sync would silently wipe since
+      #    they aren't part of dist/ or covered by an exclude. Old JS/CSS bundles
+      #    from previous builds are left behind as harmless unused files instead.
       - name: Deploy to Hostinger
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avzr --delete --exclude='/wp' --exclude='/.htaccess' --exclude='/wp-content'
+          switches: -avzr --exclude='/wp' --exclude='/.htaccess' --exclude='/wp-content'
           path: dist/
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_host: ${{ secrets.HOST }}
