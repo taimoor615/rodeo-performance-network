@@ -1676,6 +1676,9 @@
         if (!get_role('rpn_producer')) {
             add_role('rpn_producer', 'RPN Producer', array('read' => true));
         }
+        if (!get_role('rpn_pickup_team')) {
+            add_role('rpn_pickup_team', 'RPN Pickup Team', array('read' => true));
+        }
     }
     add_action('init', 'rpn_add_roles', 5);
 
@@ -2256,6 +2259,128 @@
         return new WP_REST_Response(array('success' => true, 'message' => 'Password updated. You can now log in.'), 200);
     }
 
+    /* ==========================================================================
+     * EMAIL VERIFICATION — confirm-your-email-before-login flow
+     * ========================================================================== */
+    function rpn_register_email_verification_routes() {
+        register_rest_route('rpn/v1', '/verify-email', array(
+            'methods'             => array('GET', 'OPTIONS'),
+            'permission_callback' => '__return_true',
+            'callback'            => 'rpn_verify_email_callback',
+            'args'                => array(
+                'token' => array('required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'),
+            ),
+        ));
+        register_rest_route('rpn/v1', '/resend-verification', array(
+            'methods'             => array('POST', 'OPTIONS'),
+            'permission_callback' => '__return_true',
+            'callback'            => 'rpn_resend_verification_callback',
+            'args'                => array(
+                'email' => array('required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'),
+            ),
+        ));
+    }
+    add_action('rest_api_init', 'rpn_register_email_verification_routes');
+
+    /**
+     * Generates a verification token for a user, stores it, and emails a confirmation link.
+     * Called on registration and from the resend-verification endpoint.
+     */
+    function rpn_send_verification_email($user_id) {
+        $user = get_user_by('id', $user_id);
+        if (!$user) return false;
+
+        $token = bin2hex(random_bytes(20));
+        update_user_meta($user_id, 'rpn_email_verify_token', $token);
+        update_user_meta($user_id, 'rpn_email_verified', '0');
+
+        $verify_url = rpn_get_react_app_url() . '/verify-email?token=' . rawurlencode($token);
+        $first_name = get_user_meta($user_id, 'first_name', true) ?: $user->display_name ?: $user->user_login;
+
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: RIN Rodeo <info@rinrodeo.com>');
+        $subject = 'Confirm your email — RIN';
+        $msg = '<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#F9FAFB;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F9FAFB;padding:40px 16px;">
+  <tr><td align="center">
+    <table width="100%" style="max-width:560px;" cellpadding="0" cellspacing="0">
+      <tr><td style="background:#111827;border-radius:12px 12px 0 0;padding:28px 40px;text-align:center;">
+        <p style="margin:0;color:#fff;font-size:24px;font-weight:900;letter-spacing:-1px;">RIN</p>
+        <p style="margin:4px 0 0;color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:2px;text-transform:uppercase;">Rodeo Information Network</p>
+      </td></tr>
+      <tr><td style="background:#FD0000;height:4px;"></td></tr>
+      <tr><td style="background:#fff;padding:36px 40px;">
+        <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#111827;">Confirm your email, ' . esc_html($first_name) . '</p>
+        <p style="margin:0 0 28px;font-size:15px;color:#4B5563;line-height:1.7;">Please confirm your email address to activate your RIN account. You will not be able to log in until it is verified.</p>
+        <table cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+          <tr><td style="background:#FD0000;border-radius:8px;">
+            <a href="' . esc_url($verify_url) . '" style="display:inline-block;padding:14px 36px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;">Verify Email Address &rarr;</a>
+          </td></tr>
+        </table>
+        <p style="margin:0;font-size:13px;color:#6B7280;line-height:1.65;">If the button doesn\'t work, copy and paste this link into your browser:<br>' . esc_html($verify_url) . '</p>
+      </td></tr>
+      <tr><td style="background:#F9FAFB;border-top:1px solid #E5E7EB;border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+        <p style="margin:0;font-size:12px;color:#9CA3AF;">&copy; ' . date('Y') . ' Rodeo Information Network Inc. &middot; <a href="https://rinrodeo.com" style="color:#9CA3AF;text-decoration:none;">rinrodeo.com</a></p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>';
+        return wp_mail($user->user_email, $subject, $msg, $headers);
+    }
+
+    function rpn_verify_email_callback($request) {
+        if ($request->get_method() === 'OPTIONS') return new WP_REST_Response(null, 204);
+        $token = $request->get_param('token');
+        if (empty($token)) {
+            return new WP_REST_Response(array('success' => false, 'message' => 'Missing verification token.'), 400);
+        }
+        $users = get_users(array(
+            'meta_key'   => 'rpn_email_verify_token',
+            'meta_value' => $token,
+            'number'     => 1,
+        ));
+        if (empty($users)) {
+            return new WP_REST_Response(array('success' => false, 'message' => 'This verification link is invalid or has already been used.'), 400);
+        }
+        $user = $users[0];
+        update_user_meta($user->ID, 'rpn_email_verified', '1');
+        delete_user_meta($user->ID, 'rpn_email_verify_token');
+
+        // Log the user straight in after verifying, same token mechanism as /rpn/v1/login.
+        $auth_token = bin2hex(random_bytes(24));
+        set_transient('rpn_auth_' . $auth_token, array(
+            'user_id' => $user->ID,
+            'expires' => time() + DAY_IN_SECONDS,
+        ), DAY_IN_SECONDS);
+
+        return new WP_REST_Response(array(
+            'success' => true,
+            'message' => 'Email verified. You are now logged in.',
+            'token'   => $auth_token,
+            'user'    => rpn_build_me_payload($user->ID),
+        ), 200);
+    }
+
+    function rpn_resend_verification_callback($request) {
+        if ($request->get_method() === 'OPTIONS') return new WP_REST_Response(null, 204);
+        $email = $request->get_param('email');
+        $user  = get_user_by('email', $email);
+        // Always respond the same way — do not leak whether email exists
+        $generic = array('success' => true, 'message' => 'If that email is registered and not yet verified, a new verification link has been sent.');
+        if (!$user) {
+            return new WP_REST_Response($generic, 200);
+        }
+        if (get_user_meta($user->ID, 'rpn_email_verified', true) === '1') {
+            return new WP_REST_Response(array('success' => true, 'message' => 'This email is already verified. You can log in.'), 200);
+        }
+        rpn_send_verification_email($user->ID);
+        return new WP_REST_Response($generic, 200);
+    }
+
     function rpn_verify_token($token) {
         if (empty($token)) return null;
         $data = get_transient('rpn_auth_' . $token);
@@ -2283,6 +2408,15 @@
         $user = get_user_by('email', $email);
         if (!$user || !wp_check_password($password, $user->user_pass, $user->ID)) {
             return new WP_REST_Response(array('success' => false, 'message' => 'Invalid email or password.'), 401);
+        }
+        // Accounts created before email verification existed have no rpn_email_verified meta at
+        // all — only block login for accounts explicitly marked unverified ('0').
+        if (get_user_meta($user->ID, 'rpn_email_verified', true) === '0') {
+            return new WP_REST_Response(array(
+                'success' => false,
+                'code'    => 'email_not_verified',
+                'message' => 'Please verify your email before logging in. Check your inbox for the verification link.',
+            ), 403);
         }
         $token = bin2hex(random_bytes(24));
         set_transient('rpn_auth_' . $token, array(
@@ -3915,7 +4049,31 @@
                             update_post_meta($producer_id, 'rpn_linked_user_id', $user_id);
                         }
                     }
-                    $role = ($joining_as === 'rider') ? 'rpn_rider' : (($joining_as === 'contractor') ? 'rpn_contractor' : (($joining_as === 'producer') ? 'rpn_producer' : 'subscriber'));
+                    if ($joining_as === 'pickup_team') {
+                        $pt_name = trim($first_name . ' ' . $last_name) ?: $username;
+                        $pt_slug = sanitize_title($pt_name);
+                        if (get_page_by_path($pt_slug, OBJECT, 'pickup_team')) {
+                            $pt_slug = $pt_slug . '-' . $user_id;
+                        }
+                        $pt_id = wp_insert_post(array(
+                            'post_type'   => 'pickup_team',
+                            'post_title'  => $pt_name,
+                            'post_name'   => $pt_slug,
+                            'post_status' => 'publish',
+                            'post_author' => $user_id,
+                        ), true);
+                        if (!is_wp_error($pt_id) && $pt_id > 0) {
+                            update_user_meta($user_id, 'rpn_linked_pickup_team_id', $pt_id);
+                            update_post_meta($pt_id, 'rpn_linked_user_id', $user_id);
+                        }
+                    }
+                    $role_map = array(
+                        'rider'       => 'rpn_rider',
+                        'contractor'  => 'rpn_contractor',
+                        'producer'    => 'rpn_producer',
+                        'pickup_team' => 'rpn_pickup_team',
+                    );
+                    $role = isset($role_map[$joining_as]) ? $role_map[$joining_as] : 'subscriber';
                     $user->set_role($role);
                     update_user_meta($user_id, 'rpn_joining_as', $joining_as);
 
@@ -3962,6 +4120,12 @@
                     }
 
                     $user_created = true;
+
+                    // Email verification — user cannot log in until they click the link below.
+                    $verify_token = bin2hex(random_bytes(20));
+                    update_user_meta($user_id, 'rpn_email_verify_token', $verify_token);
+                    update_user_meta($user_id, 'rpn_email_verified', '0');
+                    $verify_url = rpn_get_react_app_url() . '/verify-email?token=' . rawurlencode($verify_token);
 
                     $checkout_url = '';
                     if (!$is_trial_role && $product_id > 0 && class_exists('WooCommerce')) {
@@ -4041,12 +4205,21 @@
       <!-- Body -->
       <tr><td style="background:#fff;padding:36px 40px;">
         <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#111827;">Welcome, ' . esc_html($first_name) . '!</p>
-        <p style="margin:0 0 28px;font-size:15px;color:#4B5563;line-height:1.7;">Your RIN account is ready. Use the credentials below to log in and start building your rodeo performance profile.</p>
+        <p style="margin:0 0 28px;font-size:15px;color:#4B5563;line-height:1.7;">Your RIN account has been created. Confirm your email address to activate it, then use the credentials below to log in and start building your rodeo performance profile.</p>
+
+        <!-- Verify CTA -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+          <tr><td style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #16a34a;border-radius:8px;padding:16px 20px;">
+            <p style="margin:0 0 10px;font-size:13px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.05em;">Step 1 — Confirm Your Email</p>
+            <p style="margin:0 0 12px;font-size:14px;color:#374151;">You must verify your email before you can log in.</p>
+            <a href="' . esc_url($verify_url) . '" style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;font-size:14px;font-weight:700;padding:10px 24px;border-radius:6px;">Verify Email Address &rarr;</a>
+          </td></tr>
+        </table>
 
         <!-- Credentials -->
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#F9FAFB;border:1px solid #E5E7EB;border-left:4px solid #FD0000;border-radius:8px;margin:0 0 28px;">
           <tr><td style="padding:20px 24px;">
-            <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.08em;">Your Login Details</p>
+            <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.08em;">Step 2 — Your Login Details</p>
             <p style="margin:0 0 8px;font-size:14px;color:#374151;"><strong>Email:</strong>&nbsp;&nbsp;' . esc_html($email) . '</p>
             <p style="margin:0;font-size:14px;color:#374151;"><strong>Temporary Password:</strong>&nbsp;&nbsp;<code style="background:#e5e7eb;padding:2px 8px;border-radius:4px;font-size:13px;">' . esc_html($password) . '</code></p>
           </td></tr>

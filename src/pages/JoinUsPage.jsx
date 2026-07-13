@@ -321,7 +321,7 @@ export default function JoinUsPage() {
             <div className="signup-success-icon" aria-hidden="true">&#10003;</div>
             <h2 id="signup-success-title" className="signup-success-title">You're in!</h2>
             <p className="signup-success-msg">
-              Thank you for signing up. Please check your email for your login information.
+              Thank you for signing up. Check your email and click the verification link to activate your account — you'll need to confirm it before you can log in.
             </p>
             <a href="/login" className="signup-success-btn">Go to Login &rarr;</a>
           </div>

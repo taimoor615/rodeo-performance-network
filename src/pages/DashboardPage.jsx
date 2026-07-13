@@ -201,7 +201,7 @@ export default function DashboardPage() {
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileMsg, setProfileMsg] = useState(null)
   const [editProfile, setEditProfile] = useState({
-    first_name: '', last_name: '', bio: '', state: '', city: '',
+    display_name: '', first_name: '', last_name: '', bio: '', state: '', city: '',
     event_type: '', age_group: '', phone: '', website: '',
     // Business profile fields (contractor / producer)
     business_name: '', address_street: '', address_zip: '', contact_name: '',
@@ -414,6 +414,7 @@ export default function DashboardPage() {
         const p = data.profile || {}
         const highlights = Array.isArray(p.video_highlights) ? p.video_highlights : []
         setEditProfile({
+          display_name: data.display_name || '',
           first_name:  data.first_name  || '',
           last_name:   data.last_name   || '',
           bio:         p.bio        || '',
@@ -1214,6 +1215,16 @@ export default function DashboardPage() {
                   <h3 className="dashboard-form-section-title">Business Info</h3>
 
                   <div className="dashboard-form-row">
+                    <label>Display Name <span className="optional">(shown on your dashboard and public profile)</span></label>
+                    <input
+                      type="text"
+                      value={editProfile.display_name}
+                      onChange={(e) => setEditProfile((p) => ({ ...p, display_name: e.target.value }))}
+                      placeholder="How your name should appear on RIN"
+                    />
+                  </div>
+
+                  <div className="dashboard-form-row">
                     <label>{isProducer && !isContractor ? 'Organization Name' : 'Business Name'} <span className="required">*</span></label>
                     <input
                       type="text"
@@ -1376,6 +1387,16 @@ export default function DashboardPage() {
               ) : (
                 /* ── RIDER PROFILE FORM ──────────────────────────────────────── */
                 <>
+                  <div className="dashboard-form-row">
+                    <label>Display Name <span className="optional">(shown on your dashboard and public profile)</span></label>
+                    <input
+                      type="text"
+                      value={editProfile.display_name}
+                      onChange={(e) => setEditProfile((p) => ({ ...p, display_name: e.target.value }))}
+                      placeholder="How your name should appear on RIN"
+                    />
+                  </div>
+
                   <div className="dashboard-form-row dashboard-form-row--half">
                     <div>
                       <label>First Name</label>

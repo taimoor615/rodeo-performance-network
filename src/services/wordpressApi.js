@@ -103,6 +103,27 @@ export const setPassword = async ({ login, key, new_password }) => {
 }
 
 /**
+ * Confirm a registration email via its verification token — GET /rpn/v1/verify-email?token=X
+ * Returns { success, token, user } — the token logs the user straight in.
+ */
+export const verifyEmail = async (token) => {
+  const response = await fetch(getApiUrl('/rpn/v1/verify-email', { token }))
+  return handleResponse(response)
+}
+
+/**
+ * Ask for a new verification email — POST /rpn/v1/resend-verification
+ */
+export const resendVerification = async (email) => {
+  const response = await fetch(`${WP_CONFIG.apiUrl}/rpn/v1/resend-verification`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  return handleResponse(response)
+}
+
+/**
  * Fetch media/attachments
  */
 export const getMediaAttachment = async (id) => {

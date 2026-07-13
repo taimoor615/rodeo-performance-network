@@ -73,7 +73,9 @@ export function AuthProvider({ children }) {
     })
     const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      throw new Error(data.message || 'Login failed')
+      const err = new Error(data.message || 'Login failed')
+      err.code = data.code
+      throw err
     }
     if (data.token) {
       skipVerifyRef.current = true
@@ -82,6 +84,15 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
     return data
+  }, [setToken])
+
+  // Used by the email-verification landing page: the verify-email endpoint returns
+  // a token + user directly (no password re-entry needed).
+  const loginWithToken = useCallback((newToken, newUser) => {
+    skipVerifyRef.current = true
+    setToken(newToken)
+    setUser(newUser ?? null)
+    setLoading(false)
   }, [setToken])
 
   const logout = useCallback(() => {
@@ -98,6 +109,7 @@ export function AuthProvider({ children }) {
     loading,
     isAuthenticated: !!token && !!user,
     login,
+    loginWithToken,
     logout,
     refreshUser,
     getAuthHeaders: () => (token ? { 'X-RPN-Auth': token, 'Authorization': `Bearer ${token}` } : {}),
