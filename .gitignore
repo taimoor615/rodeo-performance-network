@@ -71,6 +71,7 @@ coverage/
 # ========================================
 *.md
 *.MD
+old md's/
 
 # ========================================
 # Internal HTML guides (not part of the app)

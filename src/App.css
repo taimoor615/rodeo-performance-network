@@ -5534,7 +5534,9 @@
   gap: 0;
   margin-bottom: 1.5rem;
   border-bottom: 2px solid var(--rpn-border);
-  /* overflow-x: auto; */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 .dashboard-tabs button {
   padding: 0.7rem 1.35rem;

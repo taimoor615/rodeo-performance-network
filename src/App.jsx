@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './pages/Layout'
 import HomePage from './pages/HomePage'
 import RankingsPage from './pages/RankingsPage'
@@ -54,6 +54,7 @@ function App() {
           <Route path="contractors/:slug" element={<ContractorDetailPage />} />
           <Route path="producers" element={<ProducersPage />} />
           <Route path="producers/:slug" element={<ProducerDetailPage />} />
+          <Route path="organizations" element={<Navigate to="/producers" replace />} />
           <Route path="add-performance" element={<AddPerformancePage />} />
           <Route path="about-us" element={<AboutUsPage />} />
           <Route path="join-us" element={<JoinUsPage />} />
