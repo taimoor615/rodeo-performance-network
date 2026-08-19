@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getPost, getPosts } from '../services/wordpressApi'
+import { decodeHtmlEntities, stripHtml } from '../utils/html'
 
 function PostMeta({ icon, children }) {
   return (
@@ -64,7 +65,7 @@ export default function PostPage() {
   )
 
   const featImg    = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || null
-  const featAlt    = post._embedded?.['wp:featuredmedia']?.[0]?.alt_text   || post.title.rendered
+  const featAlt    = post._embedded?.['wp:featuredmedia']?.[0]?.alt_text   || decodeHtmlEntities(post.title.rendered)
   const author     = post._embedded?.author?.[0]?.name || null
   const categories = post._embedded?.['wp:term']?.[0] || []
   const tags       = post._embedded?.['wp:term']?.[1] || []
@@ -88,7 +89,7 @@ export default function PostPage() {
           {categories.length > 0 && (
             <div className="post-hero-cats">
               {categories.map(cat => (
-                <span key={cat.id} className="post-hero-cat">{cat.name}</span>
+                <span key={cat.id} className="post-hero-cat">{decodeHtmlEntities(cat.name)}</span>
               ))}
             </div>
           )}
@@ -111,7 +112,7 @@ export default function PostPage() {
           {tags.length > 0 && (
             <div className="post-tags">
               {tags.map(tag => (
-                <span key={tag.id} className="post-tag">#{tag.name}</span>
+                <span key={tag.id} className="post-tag">#{decodeHtmlEntities(tag.name)}</span>
               ))}
             </div>
           )}
@@ -128,7 +129,7 @@ export default function PostPage() {
             <div className="post-share">
               <span>Share:</span>
               <a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title.rendered)}`}
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(decodeHtmlEntities(post.title.rendered))}`}
                 target="_blank" rel="noopener noreferrer" className="post-share-btn"
               >Twitter</a>
               <a
@@ -149,21 +150,21 @@ export default function PostPage() {
               const img     = r._embedded?.['wp:featuredmedia']?.[0]?.source_url || null
               const cats    = r._embedded?.['wp:term']?.[0] || []
               const excerpt = r.excerpt?.rendered
-                ? r.excerpt.rendered.replace(/<[^>]+>/g, '').trim()
+                ? stripHtml(r.excerpt.rendered).replace(/\[…\]/g, '…')
                 : ''
               const d = new Date(r.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
               return (
                 <article key={r.id} className="post-card">
                   <Link to={`/post/${r.slug}`} className="post-card-image-link" tabIndex={-1} aria-hidden>
                     {img
-                      ? <img src={img} alt={r.title.rendered} className="post-card-img" loading="lazy" />
+                      ? <img src={img} alt={decodeHtmlEntities(r.title.rendered)} className="post-card-img" loading="lazy" />
                       : <div className="post-card-img-placeholder"><span>RIN</span></div>
                     }
                   </Link>
                   <div className="post-card-body">
                     {cats.length > 0 && (
                       <div className="post-card-cats">
-                        {cats.slice(0, 2).map(c => <span key={c.id} className="post-card-cat">{c.name}</span>)}
+                        {cats.slice(0, 2).map(c => <span key={c.id} className="post-card-cat">{decodeHtmlEntities(c.name)}</span>)}
                       </div>
                     )}
                     <h3 className="post-card-title">

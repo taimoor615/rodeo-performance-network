@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { getPageBySlug } from '../services/wordpressApi'
+import { decodeHtmlEntities } from '../utils/html'
 
 export default function LegalPage() {
   const { pathname } = useLocation()
@@ -20,7 +21,7 @@ export default function LegalPage() {
       .then(data => {
         if (!data) { setError('Page not found.'); return }
         setPage(data)
-        document.title = `${data.title.rendered} | RIN`
+        document.title = `${decodeHtmlEntities(data.title.rendered)} | RIN`
       })
       .catch(() => setError('Could not load this page. Please try again later.'))
       .finally(() => setLoading(false))

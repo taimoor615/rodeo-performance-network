@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getPosts, getCustomPosts, getHomepageData, getRevenueProducts, getEvents } from '../services/wordpressApi'
 import { getRiderImage, getAnimalImage, getEventImage } from '../utils/placeholders'
+import { decodeHtmlEntities, stripHtml } from '../utils/html'
 import Carousel from '../components/Carousel'
 import HomePopup from '../components/HomePopup'
 
@@ -161,7 +162,7 @@ export default function HomePage() {
       {topRidersList.length > 0 && (
         <Carousel title="Top Riders" eyebrow="Leaderboard" subtitle="The highest-rated competitors on the national circuit." viewAllTo="/rankings" viewAllText="View Standings" visibleCount={3}>
           {topRidersList.map((rider, i) => {
-            const name = rider.title?.rendered ? String(rider.title.rendered).replace(/<[^>]+>/g, '') : rider.title || 'Rider'
+            const name = rider.title?.rendered ? stripHtml(rider.title.rendered) : rider.title || 'Rider'
             const location = [rider.city, rider.state].filter(Boolean).join(', ')
             const eventType = rider.event_type || rider.meta?.event_type || rider.acf?.event_type
             return (
@@ -456,7 +457,7 @@ export default function HomePage() {
               const categories = post._embedded?.['wp:term']?.[0] || []
               const tags       = post._embedded?.['wp:term']?.[1] || []
               const excerpt    = post.excerpt?.rendered
-                ? post.excerpt.rendered.replace(/<[^>]+>/g, '').replace(/\[&hellip;\]/g, '…').trim()
+                ? stripHtml(post.excerpt.rendered).replace(/\[…\]/g, '…')
                 : ''
               const dateStr = new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
@@ -464,7 +465,7 @@ export default function HomePage() {
                 <article key={post.id} className="post-card">
                   <Link to={`/post/${post.slug}`} className="post-card-image-link" tabIndex={-1} aria-hidden>
                     {featImg
-                      ? <img src={featImg} alt={post.title.rendered} className="post-card-img" loading="lazy" />
+                      ? <img src={featImg} alt={decodeHtmlEntities(post.title.rendered)} className="post-card-img" loading="lazy" />
                       : <div className="post-card-img-placeholder"><span>RIN</span></div>
                     }
                   </Link>
@@ -472,7 +473,7 @@ export default function HomePage() {
                     {categories.length > 0 && (
                       <div className="post-card-cats">
                         {categories.slice(0, 2).map(cat => (
-                          <span key={cat.id} className="post-card-cat">{cat.name}</span>
+                          <span key={cat.id} className="post-card-cat">{decodeHtmlEntities(cat.name)}</span>
                         ))}
                       </div>
                     )}
@@ -483,7 +484,7 @@ export default function HomePage() {
                     <div className="post-card-footer">
                       <time className="post-card-date">{dateStr}</time>
                       {tags.slice(0, 2).map(tag => (
-                        <span key={tag.id} className="post-card-tag">#{tag.name}</span>
+                        <span key={tag.id} className="post-card-tag">#{decodeHtmlEntities(tag.name)}</span>
                       ))}
                     </div>
                     <Link to={`/post/${post.slug}`} className="post-card-read-more">Read more →</Link>

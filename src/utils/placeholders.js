@@ -2,6 +2,7 @@
  * Placeholder image URLs when WordPress has no featured image.
  * Uses placehold.co with RPN colors (blue #002868, white #FFFFFF).
  */
+import { stripHtml } from './html'
 
 const BASE = 'https://placehold.co'
 const BG = '002868'
@@ -26,7 +27,7 @@ export function pickupTeamPlaceholder(name = 'Team') {
 export function getRiderImage(rider) {
   const url = rider._embedded?.['wp:featuredmedia']?.[0]?.source_url
   if (url) return url
-  const name = rider.title?.rendered ? rider.title.rendered.replace(/<[^>]+>/g, '').trim() : 'Rider'
+  const name = rider.title?.rendered ? stripHtml(rider.title.rendered) : 'Rider'
   return riderPlaceholder(name)
 }
 
@@ -39,6 +40,6 @@ export function getAnimalImage(animal) {
 
 export function getEventImage(event) {
   if (event.image_url) return event.image_url
-  const title = (event.title && (typeof event.title === 'string' ? event.title : event.title.rendered)) ? String(event.title).replace(/<[^>]+>/g, '').trim() : 'Event'
+  const title = (event.title && (typeof event.title === 'string' ? event.title : event.title.rendered)) ? stripHtml(String(event.title)) : 'Event'
   return eventPlaceholder(title)
 }
