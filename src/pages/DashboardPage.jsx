@@ -316,6 +316,7 @@ export default function DashboardPage() {
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(null)
   const [profilePhotoSaving, setProfilePhotoSaving] = useState(false)
   const [profilePhotoMsg, setProfilePhotoMsg] = useState(null)
+  const [profilePhotoReading, setProfilePhotoReading] = useState(false)
 
   // ---- Image crop modal state ----
   const [cropSrc, setCropSrc] = useState(null)
@@ -598,13 +599,23 @@ export default function DashboardPage() {
       setProfilePhotoMsg({ type: 'error', text: 'Only JPG and PNG files are accepted.' })
       return
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setProfilePhotoMsg({ type: 'error', text: 'File must be 5 MB or smaller.' })
+    // 12 MB — modern phone cameras routinely produce 5-10 MB JPEGs, the old 5 MB cap rejected those silently-feeling on mobile
+    if (file.size > 12 * 1024 * 1024) {
+      setProfilePhotoMsg({ type: 'error', text: 'File must be 12 MB or smaller.' })
       return
     }
     setProfilePhotoMsg(null)
+    setProfilePhotoReading(true)
     const reader = new FileReader()
-    reader.onloadend = () => { setCropSrc(reader.result); setCropTarget('profile') }
+    reader.onloadend = () => {
+      setProfilePhotoReading(false)
+      setCropSrc(reader.result)
+      setCropTarget('profile')
+    }
+    reader.onerror = () => {
+      setProfilePhotoReading(false)
+      setProfilePhotoMsg({ type: 'error', text: 'Could not read that image. Please try a different photo.' })
+    }
     reader.readAsDataURL(file)
     // reset input so the same file can be re-selected after cancelling crop
     e.target.value = ''
@@ -1113,6 +1124,23 @@ export default function DashboardPage() {
         ))}
       </nav>
 
+      {/* ----- Mobile floating "Post Score" button — jumps straight to score entry from any tab ----- */}
+      {(isRider || isAdmin) && activeTab !== 'scores' && (
+        <button
+          type="button"
+          className="dashboard-fab-score"
+          onClick={() => {
+            setActiveTab('scores')
+            setScoreFormOpen(true)
+            setScoreMsg(null)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+          aria-label="Post a new score"
+        >
+          + Post Score
+        </button>
+      )}
+
       {/* ================================================================
           TAB: PROFILE
       ================================================================ */}
@@ -1360,7 +1388,7 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="dashboard-form-row">
-                    <label>Logo / Photo <span className="optional">(optional — JPG or PNG, max 5 MB)</span></label>
+                    <label>Logo / Photo <span className="optional">(optional — JPG or PNG, max 12 MB)</span></label>
                     <div className="profile-photo-upload">
                       {(profilePhotoPreview || profile?.profile?.photo_url) && (
                         <img
@@ -1375,6 +1403,9 @@ export default function DashboardPage() {
                         onChange={handleProfilePhotoChange}
                         className="profile-photo-input"
                       />
+                      {profilePhotoReading && (
+                        <span className="profile-photo-filename">Reading image…</span>
+                      )}
                       {profilePhotoFile && (
                         <span className="profile-photo-filename">{profilePhotoFile.name}</span>
                       )}
@@ -1472,7 +1503,7 @@ export default function DashboardPage() {
 
               {/* Profile photo upload */}
               <div className="dashboard-form-row">
-                <label>Profile Photo <span className="optional">(optional — JPG or PNG, max 5 MB)</span></label>
+                <label>Profile Photo <span className="optional">(optional — JPG or PNG, max 12 MB)</span></label>
                 <div className="profile-photo-upload">
                   {(profilePhotoPreview || profile?.profile?.photo_url) && (
                     <img
@@ -1487,6 +1518,9 @@ export default function DashboardPage() {
                     onChange={handleProfilePhotoChange}
                     className="profile-photo-input"
                   />
+                  {profilePhotoReading && (
+                    <span className="profile-photo-filename">Reading image…</span>
+                  )}
                   {profilePhotoFile && (
                     <span className="profile-photo-filename">{profilePhotoFile.name}</span>
                   )}
@@ -2905,23 +2939,6 @@ export default function DashboardPage() {
                       </select>
                     </div>
                     <div>
-                      <label>Division *</label>
-                      <select value={scoreForm.timed_division}
-                        onChange={(e) => setScoreForm((f) => ({ ...f, timed_division: e.target.value }))}>
-                        <option value="">Select division…</option>
-                        {getDivisionsForEvent(scoreForm.event_category).map((d) => <option key={d} value={d}>{d}</option>)}
-                      </select>
-                      {['Barrel Racing', 'Barrel Racing (Youth)', 'Pole Bending'].includes(scoreForm.event_category) && (
-                        <p className="form-hint">1D = fastest; 5D = slowest. Set by the event based on your run time.</p>
-                      )}
-                      {scoreForm.event_category === 'Goat Tying' && (
-                        <p className="form-hint">Youth event — select your age division. 5-sec penalty if horse crosses the rope.</p>
-                      )}
-                      {['Team Roping – Header', 'Team Roping – Heeler'].includes(scoreForm.event_category) && (
-                        <p className="form-hint">Combined header + heeler handicap number. "Slide" = raised cap handicap bracket (WSTR format).</p>
-                      )}
-                    </div>
-                    <div>
                       <label>Go-Round *</label>
                       <select value={scoreForm.timed_go_round}
                         onChange={(e) => setScoreForm((f) => ({ ...f, timed_go_round: e.target.value }))}>
@@ -2982,7 +2999,7 @@ export default function DashboardPage() {
                       </button>
                       <button type="button"
                         className={`score-cover-btn score-cover-btn--no${scoreForm.got_time === false ? ' active' : ''}`}
-                        onClick={() => setScoreForm((f) => ({ ...f, got_time: false, raw_run_time: '', num_penalties: '0' }))}>
+                        onClick={() => setScoreForm((f) => ({ ...f, got_time: false, raw_run_time: '', num_penalties: '0', timed_division: '' }))}>
                         NO — No Time / DQ
                       </button>
                     </div>
@@ -2990,7 +3007,7 @@ export default function DashboardPage() {
 
                   {scoreForm.got_time === false && (
                     <div className="score-buckoff-notice">
-                      No Time recorded. This run will score 0 for RPI purposes. No time entry needed.
+                      No Time recorded. This run will score 0 for RPI purposes. No division needed.
                     </div>
                   )}
 
@@ -3038,6 +3055,25 @@ export default function DashboardPage() {
                       {/* Clean run indicator */}
                       <div className={`timed-cleanrun-badge ${cleanRun ? 'clean' : 'penalty'}`}>
                         {cleanRun ? '✓ Clean Run' : `Penalty Run — ${numPen} infraction${numPen !== 1 ? 's' : ''}`}
+                      </div>
+
+                      {/* Division — asked only after a time is confirmed, since it's set by the event based on run time */}
+                      <div className="dashboard-form-row">
+                        <label>Division *</label>
+                        <select value={scoreForm.timed_division}
+                          onChange={(e) => setScoreForm((f) => ({ ...f, timed_division: e.target.value }))}>
+                          <option value="">Select division…</option>
+                          {getDivisionsForEvent(scoreForm.event_category).map((d) => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                        {['Barrel Racing', 'Barrel Racing (Youth)', 'Pole Bending'].includes(scoreForm.event_category) && (
+                          <p className="form-hint">1D = fastest; 5D = slowest. Set by the event based on your run time.</p>
+                        )}
+                        {scoreForm.event_category === 'Goat Tying' && (
+                          <p className="form-hint">Youth event — select your age division. 5-sec penalty if horse crosses the rope.</p>
+                        )}
+                        {['Team Roping – Header', 'Team Roping – Heeler'].includes(scoreForm.event_category) && (
+                          <p className="form-hint">Combined header + heeler handicap number. "Slide" = raised cap handicap bracket (WSTR format).</p>
+                        )}
                       </div>
                     </>
                   )}
@@ -4262,12 +4298,23 @@ export default function DashboardPage() {
 function AnimalFormFields({ form, setForm }) {
   const set = (field) => (e) => setForm((p) => ({ ...p, [field]: e.target.value }))
   const [animalCropSrc, setAnimalCropSrc] = useState(null)
+  const [animalImageReading, setAnimalImageReading] = useState(false)
+  const [animalImageError, setAnimalImageError] = useState(null)
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setAnimalImageError(null)
+    setAnimalImageReading(true)
     const reader = new FileReader()
-    reader.onloadend = () => setAnimalCropSrc(reader.result)
+    reader.onloadend = () => {
+      setAnimalImageReading(false)
+      setAnimalCropSrc(reader.result)
+    }
+    reader.onerror = () => {
+      setAnimalImageReading(false)
+      setAnimalImageError('Could not read that image. Please try a different photo.')
+    }
     reader.readAsDataURL(file)
     e.target.value = ''
   }
@@ -4441,6 +4488,8 @@ function AnimalFormFields({ form, setForm }) {
           </div>
         )}
         <input type="file" accept="image/*" onChange={handleImageChange} />
+        {animalImageReading && <p className="form-hint">Reading image…</p>}
+        {animalImageError && <p className="dashboard-msg dashboard-msg--error">{animalImageError}</p>}
         <small style={{ color: '#6b7280' }}>Select a photo to open the crop tool. Supported: JPG, PNG, WebP.</small>
       </div>
       {animalCropSrc && (
